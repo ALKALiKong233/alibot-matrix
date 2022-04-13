@@ -49,13 +49,13 @@ async def build(room, message):
         os.chdir(buildinfo['dir'])
         if '-g' in match.args() and '-c' in match.args():
             await alibuildbot.api.send_text_message(room.room_id, 'Starting Build, clean, GAPPS')
-            build = os.system('bash ' + mkscr + ' 1 1 ' + buildinfo['dir'] + ' ' + str(match.args()[0]))
+            build = os.system('bash ' + buildinfo['botdir'] + 'build.sh' + ' 1 1 ' + buildinfo['dir'] + ' ' + str(match.args()[0]))
         elif '-g' in match.args():
             await alibuildbot.api.send_text_message(room.room_id, 'Starting Build, clean, VANILLA')
-            build = os.system('bash ' + mkscr + ' 0 1 ' + buildinfo['dir'] + ' ' + str(match.args()[0]))
+            build = os.system('bash ' + buildinfo['botdir'] + 'build.sh' + ' 0 1 ' + buildinfo['dir'] + ' ' + str(match.args()[0]))
         elif '-c' in match.args():
             await alibuildbot.api.send_text_message(room.room_id, 'Starting Build, dirty, GAPPS')
-            build = os.system('bash ' + mkscr + ' 1 0 ' + buildinfo['dir'] + ' ' + str(match.args()[0]))
+            build = os.system('bash ' + buildinfo['botdir'] + 'build.sh' + ' 1 0 ' + buildinfo['dir'] + ' ' + str(match.args()[0]))
         if build == 0:
             await alibuildbot.api.send_text_message(room.room_id, 'Build succeed')
             url = PB.create_paste_from_file('build.log', 0, None, None, None)
