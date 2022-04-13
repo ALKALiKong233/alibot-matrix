@@ -1,4 +1,5 @@
 from distutils.command.config import config
+from lib2to3.refactor import MultiprocessRefactoringTool
 from os import system
 import os
 from pbwrap import Pastebin
@@ -58,11 +59,28 @@ async def build(room, message):
             await alibuildbot.api.send_text_message(room.room_id, 'Option -g not found, building VANILLA Variant')
         build = os.system('bash build/envsetup.sh && lunch '+ match.args[1] + ' && mka yaap -j$(nproc --all) | tee build.log')
         if build ==0:
-            await alibuildbot.api.send_text_message(room.room_id, 'Build succeed, started uploading')
+            await alibuildbot.api.send_text_message(room.room_id, 'Build succeed')
             url = PB.create_paste_from_file('build.log', 0, None, None, None)
             await alibuildbot.api.send_text_message(room.room_id, 'Build log:' + url)
-            upload = os.system(buildinfo['upload'] + ' $(find out/target/product/lisa -maxdepth 1 -type f -name "YAAP*lisa*.zip" | sed -n -e "1{p;q}") | tee upload.log')
-            upurl = PB.create_paste_from_file('upload.log', 0, None, None, None)
-            await alibuildbot.api.send_text_message(room.room_id, 'Download link:' + upurl)
+        else:
+            await alibuildbot.api.send_text_message(room.room_id, 'Build Failed')
+            url = PB.create_paste_from_file('build.log', 0, None, None, None)
+            await alibuildbot.api.send_text_message(room.room_id, 'Build log:' + url)
+
+@alibuildbot.listener.on_message_event
+async def ava(room, message):
+    match = botlib.MessageMatch(room, message, alibuildbot, PREFIX)
+    if match.is_not_from_this_bot() and match.prefix() and match.command("getava"):
+        os.chdir(buildinfo['dir'])
+        ava = os.popen('find out/target/product/lisa -maxdepth 1 -type f -name "YAAP*lisa*.zip" | sed -n -e "1{p;q}"').read()
+        await alibuildbot.api.send_text_message(room.room_id, 'Available ZIPs: ' + ava)
+
+@alibuildbot.listener.on_message_event
+async def upload(room, message):
+    match = botlib.MessageMatch(room, message, alibuildbot, PREFIX)
+    if match.is_not_from_this_bot() and match.prefix() and match.command("upload"):
+        os.chdir(buildinfo['dir'])
+        upload = os.popen('./transfer cow --cookie=' + match.args[1] + ' -a ' + match.args[2] + ' ' + match.args[3]).read()
+        await alibuildbot.api.send_text_message(room.room_id, 'Download link:' + upload)
 
 alibuildbot.run()

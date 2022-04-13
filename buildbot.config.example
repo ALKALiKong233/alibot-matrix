@@ -6,7 +6,6 @@ password   =
 [build]
 dir        =
 proxy      = ' '
-upload     =
 
 [pastebin]
 key        =
