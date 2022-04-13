@@ -30,11 +30,14 @@ async def repo(room, message):
     if match.is_not_from_this_bot() and match.prefix() and match.command("sync"):
         os.chdir(buildinfo['dir'])
         if not match.args():
-            sync = os.system(buildinfo['proxy'] + 'repo sync --force-sync -j$(nproc --all) --no-tags --no-clone-bundle --current-branch | tee sync.log ')
+            sync = os.system(str(buildinfo['proxy']) + ' repo sync --force-sync -j$(nproc --all) --no-tags --no-clone-bundle --current-branch | tee sync.log ')
         else:
-            sync = os.system(buildinfo['proxy'] + 'repo sync --force-sync -j$(nproc --all) --no-tags --no-clone-bundle --current-branch' + match.args() + '| tee sync.log ')
-        await alibuildbot.api.send_text_message(room.room_id, 'Sync Status:' + str(sync))
+            sync = os.system(str(buildinfo['proxy']) + ' repo sync --force-sync -j$(nproc --all) --no-tags --no-clone-bundle --current-branch ' + " ".join(match.args()) + ' | tee sync.log ')
+        if sync ==0:
+            await alibuildbot.api.send_text_message(room.room_id, 'Sync Status: Succeed')
+        else:
+            await alibuildbot.api.send_text_message(room.room_id, 'Sync Status: Failed')
         url = PB.create_paste_from_file('sync.log', 0, None, None, None)
-        await alibuildbot.api.send_text_message(room.room_id, 'Sync log:' + str(url))
+        await alibuildbot.api.send_text_message(room.room_id, 'Sync log:' + url)
 
 alibuildbot.run()
