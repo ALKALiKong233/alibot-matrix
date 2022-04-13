@@ -40,4 +40,29 @@ async def repo(room, message):
         url = PB.create_paste_from_file('sync.log', 0, None, None, None)
         await alibuildbot.api.send_text_message(room.room_id, 'Sync log:' + url)
 
+@alibuildbot.listener.on_message_event
+async def build(room, message):
+    match = botlib.MessageMatch(room, message, alibuildbot, PREFIX)
+    if match.is_not_from_this_bot() and match.prefix() and match.command("build"):
+        os.chdir(buildinfo['dir'])
+        if '-c' in match.args():
+            await alibuildbot.api.send_text_message(room.room_id, 'Starting installclean')
+            os.system('bash build/envsetup.sh && lunch ' + match.args[1] + ' && mka installclean')
+            await alibuildbot.api.send_text_message(room.room_id, 'Installclean finished')
+        await alibuildbot.api.send_text_message(room.room_id, 'Starting Build')
+        if '-gapps' in match.args():
+            os.environ['YAAP_BUILDTYPE']="GAPPS"
+            await alibuildbot.api.send_text_message(room.room_id, 'Option -g found, building GAPPS Variant')
+        else:
+            os.environ['YAAP_BUILDTYPE']="VANILLA"
+            await alibuildbot.api.send_text_message(room.room_id, 'Option -g not found, building VANILLA Variant')
+        build = os.system('bash build/envsetup.sh && lunch '+ match.args[1] + ' && mka yaap -j$(nproc --all) | tee build.log')
+        if build ==0:
+            await alibuildbot.api.send_text_message(room.room_id, 'Build succeed, started uploading')
+            url = PB.create_paste_from_file('build.log', 0, None, None, None)
+            await alibuildbot.api.send_text_message(room.room_id, 'Build log:' + url)
+            upload = os.system(buildinfo['upload'] + ' $(find out/target/product/lisa -maxdepth 1 -type f -name "YAAP*lisa*.zip" | sed -n -e "1{p;q}") | tee upload.log')
+            upurl = PB.create_paste_from_file('upload.log', 0, None, None, None)
+            await alibuildbot.api.send_text_message(room.room_id, 'Download link:' + upurl)
+
 alibuildbot.run()
