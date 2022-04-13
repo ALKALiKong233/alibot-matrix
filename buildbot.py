@@ -45,20 +45,18 @@ async def repo(room, message):
 async def build(room, message):
     match = botlib.MessageMatch(room, message, alibuildbot, PREFIX)
     if match.is_not_from_this_bot() and match.prefix() and match.command("build"):
+        mkscr = os.popen('readlink -f build.sh').read()
         os.chdir(buildinfo['dir'])
-        if '-c' in match.args():
-            await alibuildbot.api.send_text_message(room.room_id, 'Starting installclean')
-            os.system('bash build/envsetup.sh && lunch ' + str(match.args()[0]) + ' && mka installclean')
-            await alibuildbot.api.send_text_message(room.room_id, 'Installclean finished')
-        await alibuildbot.api.send_text_message(room.room_id, 'Starting Build')
-        if '-gapps' in match.args():
-            os.environ['YAAP_BUILDTYPE']="GAPPS"
-            await alibuildbot.api.send_text_message(room.room_id, 'Option -g found, building GAPPS Variant')
-        else:
-            os.environ['YAAP_BUILDTYPE']="VANILLA"
-            await alibuildbot.api.send_text_message(room.room_id, 'Option -g not found, building VANILLA Variant')
-        build = os.system('bash build/envsetup.sh && lunch '+ str(match.args()[0]) + ' && mka yaap -j$(nproc --all) | tee build.log')
-        if build ==0:
+        if '-g' in match.args() and '-c' in match.args():
+            await alibuildbot.api.send_text_message(room.room_id, 'Starting Build, clean, GAPPS')
+            build = os.system('bash ' + mkscr + ' 1 1 ' + buildinfo['dir'] + ' ' + str(match.args()[0]))
+        elif '-g' in match.args():
+            await alibuildbot.api.send_text_message(room.room_id, 'Starting Build, clean, VANILLA')
+            build = os.system('bash ' + mkscr + ' 0 1 ' + buildinfo['dir'] + ' ' + str(match.args()[0]))
+        elif '-c' in match.args():
+            await alibuildbot.api.send_text_message(room.room_id, 'Starting Build, dirty, GAPPS')
+            build = os.system('bash ' + mkscr + ' 1 0 ' + buildinfo['dir'] + ' ' + str(match.args()[0]))
+        if build == 0:
             await alibuildbot.api.send_text_message(room.room_id, 'Build succeed')
             url = PB.create_paste_from_file('build.log', 0, None, None, None)
             await alibuildbot.api.send_text_message(room.room_id, 'Build log:' + url)
