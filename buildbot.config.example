@@ -1,0 +1,11 @@
+[login]
+homeserver =
+user       =
+password   =
+
+[build]
+dir        =
+proxy      = ' '
+
+[pastebin]
+key        =
