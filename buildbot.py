@@ -48,7 +48,7 @@ async def build(room, message):
         os.chdir(buildinfo['dir'])
         if '-c' in match.args():
             await alibuildbot.api.send_text_message(room.room_id, 'Starting installclean')
-            os.system('bash build/envsetup.sh && lunch ' + match.args[1] + ' && mka installclean')
+            os.system('bash build/envsetup.sh && lunch ' + str(match.args()[0]) + ' && mka installclean')
             await alibuildbot.api.send_text_message(room.room_id, 'Installclean finished')
         await alibuildbot.api.send_text_message(room.room_id, 'Starting Build')
         if '-gapps' in match.args():
@@ -57,7 +57,7 @@ async def build(room, message):
         else:
             os.environ['YAAP_BUILDTYPE']="VANILLA"
             await alibuildbot.api.send_text_message(room.room_id, 'Option -g not found, building VANILLA Variant')
-        build = os.system('bash build/envsetup.sh && lunch '+ match.args[1] + ' && mka yaap -j$(nproc --all) | tee build.log')
+        build = os.system('bash build/envsetup.sh && lunch '+ str(match.args()[0]) + ' && mka yaap -j$(nproc --all) | tee build.log')
         if build ==0:
             await alibuildbot.api.send_text_message(room.room_id, 'Build succeed')
             url = PB.create_paste_from_file('build.log', 0, None, None, None)
@@ -80,7 +80,7 @@ async def upload(room, message):
     match = botlib.MessageMatch(room, message, alibuildbot, PREFIX)
     if match.is_not_from_this_bot() and match.prefix() and match.command("upload"):
         os.chdir(buildinfo['dir'])
-        upload = os.popen('./transfer cow --cookie=' + match.args[1] + ' -a ' + match.args[2] + ' ' + match.args[3]).read()
+        upload = os.popen('./transfer cow --cookie=' + str(match.args()[0]) + ' -a ' + str(match.args()[1]) + ' ' + str(match.args()[2])).read()
         await alibuildbot.api.send_text_message(room.room_id, 'Download link:' + upload)
 
 alibuildbot.run()
