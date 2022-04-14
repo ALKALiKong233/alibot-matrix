@@ -5,6 +5,7 @@ import os
 from pbwrap import Pastebin
 import simplematrixbotlib as botlib
 from configparser import ConfigParser
+from aligo import Aligo
 import psutil
 
 cp = ConfigParser()
@@ -68,9 +69,17 @@ async def ava(room, message):
 @alibuildbot.listener.on_message_event
 async def upload(room, message):
     match = botlib.MessageMatch(room, message, alibuildbot, PREFIX)
-    if match.is_not_from_this_bot() and match.prefix() and match.command("upload"):
+    if match.is_not_from_this_bot() and match.prefix() and match.command("cowupload"):
         os.chdir(buildinfo['dir'])
         upload = os.popen('./transfer cow --cookie=' + str(match.args()[0]) + ' -a ' + str(match.args()[1]) + ' ' + str(match.args()[2])).read()
         await alibuildbot.api.send_text_message(room.room_id, 'Download link:' + upload)
+
+@alibuildbot.listener.on_message_event
+async def upload(room, message):
+    match = botlib.MessageMatch(room, message, alibuildbot, PREFIX)
+    if match.is_not_from_this_bot() and match.prefix() and match.command("aliupload"):
+        ali = Aligo(refresh_token=str(match.args()[0]))
+        ali.get_file_by_path('buildbot')
+        ali.upload_file(str(match.args()[1]),'buildbot')
 
 alibuildbot.run()

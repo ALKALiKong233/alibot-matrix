@@ -25,8 +25,12 @@
     !getava: Get a list of avaliable ZIPs you've built
 ```
 ```
-    !upload <cookies:remember-mev2=> <cow-auth-token> <file-path>
+    !cowupload <cookies:remember-mev2=> <cow-auth-token> <file-path>
     Description: Upload files to CowTransfer using https://github.com/Mikubill/transfer
+```
+```
+    !aliupload <alidrive-auth-token> <file-path>
+    Description: Upload files to AliDrive using Aligo
 ```
 ### Status Bot
 ```
