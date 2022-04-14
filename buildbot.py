@@ -18,14 +18,6 @@ alibuildbot = botlib.Bot(Creds)
 PREFIX = '!'
 
 @alibuildbot.listener.on_message_event
-async def sysInfo(room, message):
-    match = botlib.MessageMatch(room, message, alibuildbot, PREFIX)
-    if match.is_not_from_this_bot() and match.prefix() and match.command("getinfo"):
-        systemInfo = 'CPU Count:' + str(psutil.cpu_count()) + ' RAM Status:' + str(psutil.virtual_memory())
-        await alibuildbot.api.send_text_message(room.room_id, systemInfo)
-    
-
-@alibuildbot.listener.on_message_event
 async def repo(room, message):
     match = botlib.MessageMatch(room, message, alibuildbot, PREFIX)
     if match.is_not_from_this_bot() and match.prefix() and match.command("sync"):

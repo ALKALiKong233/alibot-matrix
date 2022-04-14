@@ -2,6 +2,7 @@
 
 ## Now Including
 * Android ROM Buildbot for Matrix
+* Status Bot
 
 ## Me noob in Python so don't laungh at my code
 
@@ -14,9 +15,6 @@
 2. Edit `build.sh` and `buildbot.py` to fit your ROM
 3. Run `buildbot.py` and enjoy!
 ```
-    !getinfo: Get some system info
-```
-```
     !build <target-variant> [options]
     <target-variant>: The variant you gonna to lunch, such as yaap_lisa-eng
     [options]: -c: Run mka installclean before building
@@ -28,4 +26,8 @@
 ```
     !upload <cookies:remember-mev2=> <cow-auth-token> <file-path>
     Description: Upload files to CowTransfer using https://github.com/Mikubill/transfer
+```
+### Status Bot
+```
+    !getsysinfo: Get some system info
 ```
