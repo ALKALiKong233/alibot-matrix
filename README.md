@@ -15,8 +15,9 @@
 2. Edit `build.sh` and `buildbot.py` to fit your ROM
 3. Run `buildbot.py` and enjoy!
 ```
-    !build <target-variant> [options]
+    !build <target-variant> <making-target> [options]
     <target-variant>: The variant you gonna to lunch, such as yaap_lisa-eng
+    <making-target>: The target you gonna to make (make <making-target> )
     [options]: -c: Run mka installclean before building
                -g: Build GAPPS variant of your ROM
 ```

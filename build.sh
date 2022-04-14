@@ -12,9 +12,9 @@ fi
 if [ $2 -eq 1 ]
 then
 	export TARGET_BUILD_GAPPS=true
-	make yaap -j$(nproc --all) | tee build.log
+	make $5 -j$(nproc --all) | tee build.log
 else
 	export TARGET_BUILD_GAPPS=false
-	make yaap -j$(nproc --all) | tee build.log
+	make $5 -j$(nproc --all) | tee build.log
 fi
 
