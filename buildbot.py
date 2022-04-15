@@ -9,13 +9,20 @@ from configparser import ConfigParser
 from aligo import Aligo
 import psutil
 
+def configmanager():
+    print('ConfigManager is reading configs')
+    cp.read('buildbot.config', encoding='UTF-8')
+    global logininfo
+    global buildinfo
+    global pastebininfo
+    logininfo = cp['login']
+    buildinfo = cp['build']
+    pastebininfo  = cp['pastebin']
+
 cp = ConfigParser()
-cp.read('buildbot.config', encoding='UTF-8')
-logininfo = cp['login']
-buildinfo = cp['build']
-pastebininfo  = cp['pastebin']
-PB = Pastebin(pastebininfo['key'])
+configmanager()
 Creds = botlib.Creds(logininfo['homeserver'], logininfo['user'], logininfo['password'])
+PB = Pastebin(pastebininfo['key'])
 alibuildbot = botlib.Bot(Creds)
 PREFIX = '!'
 
@@ -105,5 +112,6 @@ async def configeditor(room, message):
             cp.set(str(match.args()[1]), str(match.args()[2]), str(match.args()[3]))
             cp.write(open("buildbot.config", "w"))
             await alibuildbot.api.send_text_message(room.room_id, 'Writing succeed')
+            configmanager()
 
 alibuildbot.run()
