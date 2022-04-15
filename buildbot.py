@@ -62,7 +62,7 @@ async def ava(room, message):
     match = botlib.MessageMatch(room, message, alibuildbot, PREFIX)
     if match.is_not_from_this_bot() and match.prefix() and match.command("getava"):
         os.chdir(buildinfo['dir'])
-        ava = os.popen('find out/target/product/lisa -maxdepth 1 -type f -name "YAAP*lisa*.zip" | sed -n -e "1{p;q}"').read()
+        ava = os.popen('find out/target/product/' + buildinfo['device'] + ' -maxdepth 1 -type f -name "*' + buildinfo['device'] + '*.zip" | sed -n -e "1{p;q}"').read()
         await alibuildbot.api.send_text_message(room.room_id, 'Available ZIPs: ' + ava)
 
 @alibuildbot.listener.on_message_event
