@@ -2,6 +2,7 @@ from distutils.command.config import config
 from lib2to3.refactor import MultiprocessRefactoringTool
 from os import system
 import os
+from tkinter import W
 from pbwrap import Pastebin
 import simplematrixbotlib as botlib
 from configparser import ConfigParser
@@ -91,5 +92,20 @@ async def pick(room, message):
         await alibuildbot.api.send_text_message(room.room_id, fetch)
         pick = os.popen('git cherry-pick FETCH_HEAD').read()
         await alibuildbot.api.send_text_message(room.room_id, pick)
-        
+
+@alibuildbot.listener.on_message_event
+async def configeditor(room, message):
+    match = botlib.MessageMatch(room, message, alibuildbot, PREFIX)
+    if match.is_not_from_this_bot() and match.prefix and match.command("confmanager"):
+        if str(match.args()[0]) == '-ls':
+            sections = cp.sections()
+            await alibuildbot.api.send_text_message(room.room_id, str(sections))
+        elif str(match.args()[0]) == '-lo':
+            options = cp.options(str(match.args()[1]))
+            await alibuildbot.api.send_text_message(room.room_id, str(options))
+        elif str(match.args()[0]) == '-set':
+            cp.set(str(match.args()[1]), str(match.args()[2]), str(match.args()[3]))
+            cp.write(open("buildbot.config", "w"))
+            await alibuildbot.api.send_text_message(room.room_id, 'Writing succeed')
+
 alibuildbot.run()

@@ -39,6 +39,12 @@
     <remote-repo>: The remote repo you're getting the patch
     <target-commit>: The commit's hash you're applying
 ```
+```
+    !confmanager [options] <args>
+    -ls: List available sections of config
+    -lo <section>: List available options in the section
+    -set <section> <option> <value>: Set config
+```
 ### Status Bot
 ```
     !getsysinfo: Get some system info
