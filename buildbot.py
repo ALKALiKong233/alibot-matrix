@@ -50,14 +50,12 @@ async def build(room, message):
         elif '-c' in match.args():
             await alibuildbot.api.send_text_message(room.room_id, 'Starting Build, dirty, GAPPS')
             build = os.system('bash ' + buildinfo['botdir'] + 'build.sh' + ' 1 0 ' + buildinfo['dir'] + ' ' + str(match.args()[0]) + ' ' + str(match.args()[1]))
-        if build == 0:
+        if os.path.exists(buildinfo['dir'] + '/out/error.log'):
             await alibuildbot.api.send_text_message(room.room_id, 'Build succeed')
-            url = PB.create_paste_from_file('build.log', 0, None, None, None)
-            await alibuildbot.api.send_text_message(room.room_id, 'Build log:' + url)
         else:
             await alibuildbot.api.send_text_message(room.room_id, 'Build Failed')
             url = PB.create_paste_from_file('build.log', 0, None, None, None)
-            await alibuildbot.api.send_text_message(room.room_id, 'Build log:' + url)
+            await alibuildbot.api.send_text_message(room.room_id, 'Error log:' + url)
 
 @alibuildbot.listener.on_message_event
 async def ava(room, message):
