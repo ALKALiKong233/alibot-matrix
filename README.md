@@ -32,6 +32,13 @@
     !aliupload <alidrive-auth-token> <file-path>
     Description: Upload files to AliDrive using Aligo
 ```
+```
+    !pick <target-dir> <remote-repo> <target-commit>
+    Description: Pick a commit locally from remote repo
+    <target-dir>: The local repo you're going to apply patch, for example 'system/core'
+    <remote-repo>: The remote repo you're getting the patch
+    <target-commit>: The commit's hash you're applying
+```
 ### Status Bot
 ```
     !getsysinfo: Get some system info

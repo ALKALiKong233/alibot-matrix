@@ -67,7 +67,7 @@ async def ava(room, message):
         await alibuildbot.api.send_text_message(room.room_id, 'Available ZIPs: ' + ava)
 
 @alibuildbot.listener.on_message_event
-async def upload(room, message):
+async def cowupload(room, message):
     match = botlib.MessageMatch(room, message, alibuildbot, PREFIX)
     if match.is_not_from_this_bot() and match.prefix() and match.command("cowupload"):
         os.chdir(buildinfo['dir'])
@@ -75,11 +75,21 @@ async def upload(room, message):
         await alibuildbot.api.send_text_message(room.room_id, 'Download link:' + upload)
 
 @alibuildbot.listener.on_message_event
-async def upload(room, message):
+async def aliupload(room, message):
     match = botlib.MessageMatch(room, message, alibuildbot, PREFIX)
     if match.is_not_from_this_bot() and match.prefix() and match.command("aliupload"):
         ali = Aligo(refresh_token=str(match.args()[0]))
         ali.get_file_by_path('buildbot')
         ali.upload_file(str(match.args()[1]),'buildbot')
 
+@alibuildbot.listener.on_message_event
+async def pick(room, message):
+    match = botlib.MessageMatch(room, message, alibuildbot, PREFIX)
+    if match.is_not_from_this_bot() and match.prefix and match.command("pick"):
+        os.chdir(buildinfo['dir'] + '/' + str(match.args()[0]))
+        fetch = os.popen(buildinfo['proxy'] + ' git fetch ' + str(match.args()[1] + ' ' + str(match.args()[2]))).read()
+        await alibuildbot.api.send_text_message(room.room_id, fetch)
+        pick = os.popen('git cherry-pick FETCH_HEAD').read()
+        await alibuildbot.api.send_text_message(room.room_id, pick)
+        
 alibuildbot.run()
