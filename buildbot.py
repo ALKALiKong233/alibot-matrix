@@ -46,10 +46,10 @@ async def build(room, message):
         if '-g' in match.args() and '-c' in match.args():
             await alibuildbot.api.send_text_message(room.room_id, 'Starting Build, clean, GAPPS')
             build = os.system('bash ' + buildinfo['botdir'] + 'build.sh' + ' 1 1 ' + buildinfo['dir'] + ' ' + str(match.args()[0]) + ' ' + str(match.args()[1]))
-        elif '-g' in match.args():
+        elif '-c' in match.args():
             await alibuildbot.api.send_text_message(room.room_id, 'Starting Build, clean, VANILLA')
             build = os.system('bash ' + buildinfo['botdir'] + 'build.sh' + ' 1 0 ' + buildinfo['dir'] + ' ' + str(match.args()[0]) + ' ' + str(match.args()[1]))
-        elif '-c' in match.args():
+        elif '-g' in match.args():
             await alibuildbot.api.send_text_message(room.room_id, 'Starting Build, dirty, GAPPS')
             build = os.system('bash ' + buildinfo['botdir'] + 'build.sh' + ' 0 1 ' + buildinfo['dir'] + ' ' + str(match.args()[0]) + ' ' + str(match.args()[1]))
         if os.path.exists(buildinfo['dir'] + '/out/error.log'):
