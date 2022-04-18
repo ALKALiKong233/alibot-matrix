@@ -1,6 +1,8 @@
 #!/bin/bash
 
 cd $3
+export USE_CCACHE=1
+export CCACHE_EXEC=/usr/bin/ccache
 . build/envsetup.sh
 lunch $4
 if [ $1 -eq 1 ]
